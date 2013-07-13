@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+"use strict";
+
+
 /*
 Automatically grade files for the presence of specified HTML tags/attributes.
 Uses commander.js and cheerio. Teaches command line application development
@@ -64,9 +67,9 @@ var checkHtmlFile = function(htmlfile, checksfile, url) {
     var $;
     if (url) {
 	rest.get(url).on('complete', function(result) {
-	   $ = cheerio.load(result);
-	   URLcheck(checksfile, $);
-	});
+	       $ = cheerio.load(result);
+	       URLcheck(checksfile, $);
+	    });
     } else {
 	 $ = cheerioHtmlFile(htmlfile);
         URLcheck(checksfile, $);
@@ -94,4 +97,4 @@ if(require.main === module) {
     checkHtmlFile(program.file, program.checks, program.url);
 } else {
     exports.checkHTMLFile = checkHtmlFile;
-}
+};
