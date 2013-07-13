@@ -69,10 +69,12 @@ var checkHtmlFile = function(htmlfile, checksfile, url) {
 	rest.get(url).on('complete', function(result) {
 	       $ = cheerio.load(result);
 	       URLcheck(checksfile, $);
-	    });
+	 });
     } else {
 	 $ = cheerioHtmlFile(htmlfile);
         URLcheck(checksfile, $);
+    }
+};
     /*var checks = loadChecks(checksfile).sort();
    var out = {};
    for(var ii in checks) {
@@ -97,4 +99,4 @@ if(require.main === module) {
     checkHtmlFile(program.file, program.checks, program.url);
 } else {
     exports.checkHTMLFile = checkHtmlFile;
-};
+}
