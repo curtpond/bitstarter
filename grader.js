@@ -24,6 +24,7 @@ References:
 var fs = require('fs');
 var program = require('commander');
 var cheerio = require('cheerio');
+var rest = require('restler');
 var HTMLFILE_DEFAULT = "index.html";
 var CHECKSFILE_DEFAULT = "checks.json";
 
@@ -44,16 +45,38 @@ var loadChecks = function(checksfile) {
     return JSON.parse(fs.readFileSync(checksfile));
 };
 
-var checkHtmlFile = function(htmlfile, checksfile) {
-    $ = cheerioHtmlFile(htmlfile);
-    var checks = loadChecks(checksfile).sort();
-    var out = {};
-    for(var ii in checks) {
-        var present = $(checks[ii]).length > 0;
+//here
+var URLcheck = function (checksfile, $) {
+    var out = {},
+         checks = loadChecks(checksfile).sort(),
+         ii,
+         present;
+    for (ii in checks) {
+	present = $(checks[ii]).length > 0;
+	out[checks[ii]] = present;
+    }
+    var outJson = JSON.stringify(out, null, 4);
+    console.log(outJson);
+};
+
+var checkHtmlFile = function(htmlfile, checksfile, url) {
+    var $;
+    if (url) {
+	rest.get(url).on('complete', function(result) {
+	   $ = cheerio.load(result);
+	   URLcheck(checksfile, $);
+	});
+    } else {
+	 $ = cheerioHtmlFile(htmlfile);
+        URLcheck(checksfile, $);
+    /*var checks = loadChecks(checksfile).sort();
+   var out = {};
+   for(var ii in checks) {
+       var present = $(checks[ii]).length > 0;
         out[checks[ii]] = present;
     }
     return out;
-};
+};*/
 
 var clone = function(fn) {
     // Workaround for commander.js issue.
